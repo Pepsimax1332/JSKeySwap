@@ -17,9 +17,10 @@ function parseTree(swap, data) {
         // if the data is an object then iterate through each key.
         } else if (typeof(data) === 'object'){
             Object.keys(data).forEach(key => {
-                // if key needs to be swapped swap the key and delete the old entry.
+                // if key needs to be swapped swap the key recurse down data structure 
+                // and delete the old entry.
                 if (key in swap) {
-                    data[swap[key]] = data[key]
+                    data[swap[key]] = parse(data[key])
                     delete data[key];
                 // else recurse down the rest of the structure
                 } else {
