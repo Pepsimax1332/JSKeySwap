@@ -1,5 +1,5 @@
 /**
- * function that takes an object of keys to swap with values.
+ * function that takes an object of keys to swap out.
  * 
  * @param {*} data the Object containing the dat for which to switch the keys out.
  * @param {*} swap the keys to swap to associated values
