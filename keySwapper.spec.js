@@ -1,6 +1,6 @@
 KeySwapper = require('../modules/swapKeys');
 
-describe('Testing Parse tree to swap keys', () => {
+describe('Testing KeySwapper to swap keys', () => {
 
     const key2swap = {
         A: 'aa'
