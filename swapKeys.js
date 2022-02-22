@@ -5,6 +5,7 @@ class KeySwapper {
     /**
      * @param {'object'} data the Object containing the dat for which to switch the keys out.
      * @param {'object'} swapKeys the keys to swap to associated values.
+     * @param {'object'} reveresedSwapKeys key value pairs of swap keys are switched.
      */
     constructor(data, swapKeys) {
         this.data = data;
@@ -25,6 +26,22 @@ class KeySwapper {
     }
 
     /**
+     * Method to swap a key for another. This method will automatically de-capitalize or capitalize depending on if reversed is used.
+     * If reversed is used an inverse swap will take place swapping the value for the key inside swap. If key is not in swap this 
+     * method will just de-capitalize or capitalize the key besed on the value of reversed.
+     * 
+     * @param { string } key The key to swap
+     * @param {'object'} swap An object containing key value pairs to swap
+     * @param { boolean } reversed Boolean to dictate if an inverse swap is to occur
+     * @returns The swapped key.
+     */
+    getNewKey(key, swap, reversed) {
+        const newKey = key in swap ? swap[key] : key;
+        const firstChar = (reversed ? newKey[0].toUpperCase() : newKey[0].toLowerCase())
+        return `${firstChar}${newKey.slice(1)}`;
+    }
+
+    /**
      * Method that recursivly walks through object and swaps keys as needed. 
      * 
      * @param {'object'} data The data needed to have keys swapped. If data is an array the method will recurse
@@ -36,24 +53,14 @@ class KeySwapper {
      * @returns an object with keys swapped if needed and all key capitalisation changed to match need.
      */
     swapper(data, swap, reversed) {
-        // base case if data is primative or empty list then return data
-        if (data !== Object(data) || (Array.isArray(data) && data.length === 0)) {
-            return data;
-        }
-        // reduces accross the object to create a new one with formatted/swapped keys
+        // Base Case 1 --- Is a primative (aka not an array or object)
+        if (data !== Object(data) && !Array.isArray(data)) return data;
+        // Base Case 2 --- If data is an array map over elements and recurse
+        if (Array.isArray(data)) return data.map((elem) => this.swapper(elem, swap, reversed));
+        // else must be an object, reduce accross aobject and recurse across values
         return Object.entries(data).reduce((obj, [key, value]) => {
-
-            // if data is an array then map swapper recursivly accross all entries in array
-            if (Array.isArray(data)) {
-                return data.map((entry) => this.swapper(entry, swap, reversed));
-            // else if data is an object perform the key swap if it exists and capitalise as needed recursing accross the value
-            } else if (data === Object(data)) {
-                let newKey = key in swap ? swap[key] : key;
-                newKey = `${(reversed ? newKey[0].toUpperCase() : newKey[0].toLowerCase())}${newKey.slice(1)}`;
-
-                obj[newKey] = this.swapper(value, swap, reversed);
-                return obj;
-            } 
+            obj[this.getNewKey(key, swap, reversed)] = this.swapper(value, swap, reversed);
+            return obj;
         }, {});
     }
 }
